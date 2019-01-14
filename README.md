@@ -1,8 +1,8 @@
 # OOP_BlackJack
 
 
-okky에서 fender님의 글을 보고 시작하게 된 프로젝트.
-아래 주소로 이동하면 fender님의 글을 볼 수 있다.
+okky에서 fender님의 글을 보고 시작하게 된 프로젝트.  
+아래 주소로 이동하면 fender님의 글을 볼 수 있다.  
 https://okky.kr/article/358197  
 
 ## 프로젝트 목적
@@ -50,7 +50,7 @@ ex)100원을 배팅했을때, 이기면 200원을 얻고, 지면 100원을 잃�
  * 카드를 받고 공개한다고 하면 '카드를 받는다.', '카드를 공개한다.' 메소드를 각각 정의하여 행위를 최소단위로 나눠준다.
 * 종속성, 결합도를 낮춘다.
 * 객체지향적으로 설계한다.
-* 객체나 메소드이름은 직관적으로 알 수 있느 이름으로 한다.
+* 객체나 메소드이름은 직관적으로 알 수 있는 이름으로 한다.
 * 객체지향의 특징(추상화, 캡슐화, 다형성, 상속성)을 최대한 적용한다.
 
 
@@ -65,25 +65,26 @@ ex)100원을 배팅했을때, 이기면 200원을 얻고, 지면 100원을 잃�
 ### 객체의 속성 및 행동(요구조건)
 * 카드
   * 하트, 다이아몬드, 스페이드, 클로버 중 1개의 모양을 가진다. (4가지 모양)
-  * 숫자 2~10, K,J,Q, 에이스 등 숫자를 가진다. (13개 숫자)
+  * 숫자 2~10, K,J,Q, 에이스 등 숫자를 가진다. (13개 숫자)  
 
 * 카드뭉치
   * 총 52장의 카드를 가진다.
   * 52장의 카드 중 랜덤하게 1개를 뽑아준다.(한번 나온 카드는 또다시 나올 수 없다.)
+  * 카드를 섞는다.  
   
 * 딜러
   * 카드를 받는다.
   * 받은 카드를 소유한다.
   * 처음 카드를 1장만 공개한다.
   * 나머지 카드를 공개한다.
-  * 카드의 합계가 16점 이하면 1장을 추가한다. 17점 이상이면 받을 수 없다.
-  *딜러는 배당금을 따로 저장하지않는다.
+  * 카드의 합계가 16점 이하면 1장을 추가한다. 17점 이상이면 받을 수 없다.  
+  * *딜러는 배당금을 따로 저장하지않는다.*  
   
 * 시스템 (딜러가 규칙진행도 하려고 했으나, 역할을 단순화하기 위해 시스템을 따로 뺐다.)
   * 참가자들의 배팅액을 저장한다.
   * 참가자들와 딜러의 점수를 계산한다.
   * 승자를 선정한다.
-  * 배당금을 승자에게 준다.
+  * 배당금을 승자에게 준다.  
   
 * 참가자
   * 카드를 받는다. 
@@ -93,9 +94,86 @@ ex)100원을 배팅했을때, 이기면 200원을 얻고, 지면 100원을 잃�
   * 카드를 받지 않는다.
   * 금액을 보유한다.
   * 배팅한다.
-  * 배당금을 받는다.
+  * 배당금을 받는다.  
+    
+      
 
+## STEP 01. 밑그림 설계도(인터페이스 작성)
+#### 인터페이스 특성
+* 인터페이스는 추상메서드와 상수만을 멤버로 가진다. 
+* 인터페이스는 추상클래스처럼 몸통을 갖춘 메서드를 정의할 수 없다.  
+* 인터페이스는 그 자체로는 인스턴스를 생성할 수 없으며, 상속을 통해 구현부를 완성한다.
+
+#### 기타 특성
+* 모든 멤버변수는 public static final 로 정의하며, 생락가능하다.
+* 모든 메서드는 public abstract 로 정의하며, 생략이 가능하다. (jdk 1.8부터 static메서드와 default메서드도 가능)
+
+
+#### 설계  
+연습을 위해 위의 기타특성의 생략 가능한 문법들 생략 안하고 진행.  
+현재 단계에서는 구체적인 구현이 아니라 밑그림을 작성하도록 한다.
+  
+~~~ 
+// 카드
+interface Card
+{
+   public static fianl int CARD_PATTERN_CNT = 4; // 카드 무늬 수
+   public static final int CARD_NUMBER_CNT = 13;  // 카드의 숫자 수
+   
+   public static final int HEART = 4;
+   public static final int DIAMOND = 3;
+   public static final int SPADE = 2;
+   public static final int CLOVER = 1;
+   
+} 
+~~~
+
+~~~ 
+// 카드뭉치
+interface CardDeck
+{
+   public static final int CARD_TOTAL_CNT = 52; // 카드 총 개수
+   Card cardArr[] = new Card[CARD_TOTAL_CNT]; // 카드 객체
+   
+   public abstract pick(); // 카드르 뽑는다.
+   public abstract shuffle(); // 카드를 섞는다.
+   
+} 
+~~~
+
+~~~ 
+// 딜러
+interface Dealer
+{
+   public abstract boolean isReceiveCard(); // 카드 합계에 따라 카드를 받아야할지 말아야할지 확인
+   public abstract void ownCard(); // 카드를 소유한다.
+   public abstract Card openCard(int index); // index 번째 카드를 공개한다.
+   
+} 
+~~~
+
+~~~ 
+// 시스템
+interface RuleManager
+{
+   public abstract void acceptDevidends(); // 참가자들에게 배당금을 받는다.
+   public abstract int calculateScore(Player player); // 점수를 계산한다.
+   public abstract Player deviceWinner(); // 승자를 선정한다.
+   public abstract giveMoney(Player winner); // 승자에게 배당금을 계산하여 준다.
+   
+} 
+~~~
+
+~~~ 
+// 참가자
+interface Player
+{
+   public abstract int betting(); // 배팅한다.
+   public abstract void acceptCard(); // 카드를 받는다.
+   public abstract void passCard(); // 카드를 받지 않는다.
+   public abstract void ownCard(Card card); // 카드를 소유한다.
+   public abstract List<Card> openCard(); // 카드를 공개한다.
+} 
+~~~
 
  
-
-
