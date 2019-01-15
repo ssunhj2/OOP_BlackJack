@@ -124,13 +124,7 @@ ex)100원을 배팅했을때, 이기면 200원을 얻고, 지면 100원을 잃�
 interface Card
 {
    public static fianl int CARD_PATTERN_CNT = 4; // 카드 무늬 수
-   public static final int CARD_NUMBER_CNT = 13;  // 카드의 숫자 수
-   
-   public static final int HEART = 4;
-   public static final int DIAMOND = 3;
-   public static final int SPADE = 2;
-   public static final int CLOVER = 1;
-   
+   public static final int CARD_NUMBER_CNT = 13;  // 카드의 숫자 수   
 } 
 ~~~
 
@@ -151,7 +145,7 @@ interface CardDeck
 interface Dealer
 {
    public abstract boolean isAcceptCard(); // 카드 합계에 따라 카드를 받아야할지 말아야할지 확인
-   public abstract void ownCard(Card card); // 카드를 소유한다.
+   public abstract void acceptCard(Card card); // 카드를 받는다.
    public abstract Card openCard(int index); // index 번째 카드를 공개한다.
    
 } 
@@ -173,10 +167,9 @@ interface RuleManager
 // 참가자
 interface Player
 {
-   public abstract void betting(); // 배팅한다.
-   public abstract void acceptCard(int cardCnt); // 카드를 받는다.
+   public abstract void betting(int betCost); // 배팅한다.
+   public abstract void acceptCard(Card card); // 카드를 받는다.
    public abstract void passCard(); // 카드를 받지 않는다.
-   public abstract void ownCard(Card card); // 카드를 소유한다.
    public abstract List<Card> openCard(); // 카드를 공개한다.
 } 
 ~~~
