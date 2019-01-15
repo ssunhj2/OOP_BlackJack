@@ -98,7 +98,13 @@ ex)100원을 배팅했을때, 이기면 200원을 얻고, 지면 100원을 잃�
     
       
 
-## STEP 01. 밑그림 설계도(인터페이스 작성)
+## STEP 01. 밑그림 설계도(인터페이스 작성)  
+#### 인터페이스 먼저 작성하는 이유  
+그림을 그릴때 밑그림을 그려 전체 모양을 구상하고, 그 다음 구체적으로 그려나가기 시작한다.  
+클래스는 객체의 설계도이고, 추상클래스는 미완성 상태의 설계도다.   
+인터페이스는 추상클래스의 일종이고, 구현된게 없는 밑그림 상태의 설계도다. (추상클래스보다 추상도가 높다.)  
+가장 밑그림부터 시작하기 위해 인터페이스를 설계를 가장 먼저 시작하겠다.  
+
 #### 인터페이스 특성
 * 인터페이스는 추상메서드와 상수만을 멤버로 가진다. 
 * 인터페이스는 추상클래스처럼 몸통을 갖춘 메서드를 정의할 수 없다.  
@@ -112,7 +118,7 @@ ex)100원을 배팅했을때, 이기면 200원을 얻고, 지면 100원을 잃�
 #### 설계  
 연습을 위해 위의 기타특성의 생략 가능한 문법들 생략 안하고 진행.  
 현재 단계에서는 구체적인 구현이 아니라 밑그림을 작성하도록 한다.
-  
+
 ~~~ 
 // 카드
 interface Card
@@ -133,10 +139,9 @@ interface Card
 interface CardDeck
 {
    public static final int CARD_TOTAL_CNT = 52; // 카드 총 개수
-   Card cardArr[] = new Card[CARD_TOTAL_CNT]; // 카드 객체
    
-   public abstract pick(); // 카드르 뽑는다.
-   public abstract shuffle(); // 카드를 섞는다.
+   public abstract Card pick(); // 카드를 뽑는다.
+   public abstract void shuffle(); // 카드를 섞는다.
    
 } 
 ~~~
@@ -145,8 +150,8 @@ interface CardDeck
 // 딜러
 interface Dealer
 {
-   public abstract boolean isReceiveCard(); // 카드 합계에 따라 카드를 받아야할지 말아야할지 확인
-   public abstract void ownCard(); // 카드를 소유한다.
+   public abstract boolean isAcceptCard(); // 카드 합계에 따라 카드를 받아야할지 말아야할지 확인
+   public abstract void ownCard(Card card); // 카드를 소유한다.
    public abstract Card openCard(int index); // index 번째 카드를 공개한다.
    
 } 
@@ -157,9 +162,9 @@ interface Dealer
 interface RuleManager
 {
    public abstract void acceptDevidends(); // 참가자들에게 배당금을 받는다.
-   public abstract int calculateScore(Player player); // 점수를 계산한다.
+   public abstract int calculateScore(List<Card> cardList); // 점수를 계산한다.
    public abstract Player deviceWinner(); // 승자를 선정한다.
-   public abstract giveMoney(Player winner); // 승자에게 배당금을 계산하여 준다.
+   public abstract void giveMoney(Player winner); // 승자에게 배당금을 계산하여 준다.
    
 } 
 ~~~
@@ -168,8 +173,8 @@ interface RuleManager
 // 참가자
 interface Player
 {
-   public abstract int betting(); // 배팅한다.
-   public abstract void acceptCard(); // 카드를 받는다.
+   public abstract void betting(); // 배팅한다.
+   public abstract void acceptCard(int cardCnt); // 카드를 받는다.
    public abstract void passCard(); // 카드를 받지 않는다.
    public abstract void ownCard(Card card); // 카드를 소유한다.
    public abstract List<Card> openCard(); // 카드를 공개한다.
